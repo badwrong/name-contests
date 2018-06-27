@@ -27,27 +27,31 @@ module.exports = new GraphQLObjectType({
     createdAt: { type: GraphQLString },
     contests: {
       type: new GraphQLList(ContestType),
-      resolve(obj, args, { pgPool }) {
+      resolve(obj, args, { loaders }) {
         //read from db
-        return pgdb(pgPool).getContests(obj);
+        return loaders.contestsForUserIds.load(obj.id);
+        // return pgdb(pgPool).getContests(obj);
       }
     },
     contestsCount: {
       type: GraphQLInt,
-      resolve(obj, args, { mPool }, { fieldName }) {
-        return mdb(mPool).getCounts(obj, fieldName);
+      resolve(obj, args, { loaders }, { fieldName }) {
+        return loaders.mdb.usersByIDs.load(obj.id)
+          .then(res => res[fieldName]);
       }
     },
     namesCount: {
       type: GraphQLInt,
-      resolve(obj, args, { mPool }, { fieldName }) {
-        return mdb(mPool).getCounts(obj, fieldName);
+      resolve(obj, args, { loaders }, { fieldName }) {
+        return loaders.mdb.usersByIDs.load(obj.id)
+          .then(res => res[fieldName]);
       }
     },
     votesCount: {
       type: GraphQLInt,
-      resolve(obj, args, { mPool }, { fieldName }) {
-        return mdb(mPool).getCounts(obj, fieldName);
+      resolve(obj, args, { loaders }, { fieldName }) {
+        return loaders.mdb.usersByIDs.load(obj.id)
+          .then(res => res[fieldName]);
       }
     }
   }
